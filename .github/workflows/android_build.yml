@@ -56,12 +56,10 @@ jobs:
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
 
-        # Limpiar la compilación anterior para asegurar una descarga fresca del SDK si es necesario.
-        # Esto es crucial para que Buildozer re-evalúe y descargue el SDK si no está.
-        python -m buildozer android clean
-
         # Ejecutar Buildozer para compilar el APK.
         # Buildozer se encargará de descargar y configurar el SDK/NDK y las build-tools.
+        # Hemos eliminado 'buildozer android clean' para evitar posibles conflictos
+        # con la descarga inicial de la plataforma.
         python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
