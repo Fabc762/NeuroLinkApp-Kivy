@@ -38,30 +38,21 @@ android.minapi = 21
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WAKE_LOCK
 
 # (bool) Habilitar/deshabilitar la compilación de lanzamiento (release build)
-# ¡DEBE SER TRUE PARA AAB/APK DE PRODUCCIÓN!
-android.release = true
+# Para APK debug, esto es FALSE.
+android.release = false
 
 # (bool) Habilitar/deshabilitar la generación de Android App Bundle (AAB)
-# ¡DEBE SER TRUE PARA GENERAR UN AAB!
-android.enable_aab = true
+# Para APK debug, esto es FALSE.
+android.enable_aab = false
 
-# (str) Archivo Keystore para firmar el APK/AAB
-# ¡CAMBIA ESTO AL NOMBRE DE TU ARCHIVO .keystore!
-# Si no tienes uno, consulta la guía anterior sobre cómo generar un keystore.
-android.release_keystore = my-release-key.keystore
+# (str) Archivo Keystore para firmar el APK/AAB (solo para release)
+# android.release_keystore = my-release-key.keystore
 
-# (str) Alias del Keystore para firmar el APK/AAB
-# ¡CAMBIA ESTO AL ALIAS QUE ELEGISTE AL CREAR EL KEYSTORE!
-android.release_keystore_alias = alias_name
+# (str) Alias del Keystore para firmar el APK/AAB (solo para release)
+# android.release_keystore_alias = alias_name
 
-# (str) Contraseña del Keystore (se solicitará si no se establece aquí)
-# android.release_keystore_passphrase = tu_contraseña_keystore
-
-# (str) Contraseña del alias de la clave (se solicitará si no se establece aquí)
-# android.release_keyalias_passphrase = tu_contraseña_alias
-
-# (bool) Modo depuración (debe ser False para compilaciones de lanzamiento)
-debug = False
+# (bool) Modo depuración (DEBE SER TRUE PARA APK DEBUG)
+debug = True
 
 # (list) Extensiones de archivos a incluir en el código fuente
 source.include_exts = py,kv,png,jpg,json

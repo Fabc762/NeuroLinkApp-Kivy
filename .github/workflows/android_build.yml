@@ -1,6 +1,6 @@
 # .github/workflows/android_build.yml
 
-name: Android AAB Build
+name: Android APK Build
 
 on:
   push:
@@ -50,24 +50,21 @@ jobs:
         rm -rf .buildozer
       # Esto previene que archivos residuales de compilaciones anteriores causen problemas.
 
-    - name: Build Android AAB
+    - name: Build Android APK
       run: |
-        set -e
+        set -e # Salir inmediatamente si un comando falla
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
         export PYTHON="$PYTHON_BIN"
-        echo "Iniciando compilación del AAB. Buildozer gestionará la descarga del SDK/NDK."
-        # Ejecutar Buildozer para compilar el AAB en modo release.
-        # Buildozer se encargará de descargar y configurar el SDK/NDK y las build-tools.
-        # Asegúrate de que tu buildozer.spec tenga 'android.release = true' y 'android.enable_aab = true'
-        # y que hayas configurado tu keystore.
-        python -m buildozer android release
-      # Este comando iniciará la compilación del AAB.
+        echo "Iniciando compilación del APK. Buildozer gestionará la descarga del SDK/NDK."
+        # Ejecutar Buildozer para compilar el APK en modo debug.
+        # Asegúrate de que tu buildozer.spec tenga 'android.release = false' y 'debug = True'.
+        buildozer android debug
+      # Este comando iniciará la compilación del APK.
 
-    - name: Upload AAB artifact
+    - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: NeuroLinkApp-AAB
-        path: bin/*.aab
-      # Sube el AAB generado para que puedas descargarlo.
-      # El AAB estará en la carpeta 'bin' de tu proyecto.
+        name: NeuroLinkApp-APK
+        path: bin/*.apk # Sube el APK generado
+      # El APK estará en la carpeta 'bin' de tu proyecto.
