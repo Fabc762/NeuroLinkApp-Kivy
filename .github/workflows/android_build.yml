@@ -64,10 +64,10 @@ jobs:
         python -m buildozer android release
       # Este comando iniciará la compilación del AAB.
 
-    - name: Upload AAB artifact # <--- ¡Cambiado a AAB!
+    - name: Upload AAB artifact
       uses: actions/upload-artifact@v4
       with:
         name: NeuroLinkApp-AAB
-        path: bin/*.aab # <--- ¡Cambiado a .aab!
+        path: bin/*.aab
       # Sube el AAB generado para que puedas descargarlo.
       # El AAB estará en la carpeta 'bin' de tu proyecto.
