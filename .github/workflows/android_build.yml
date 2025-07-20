@@ -49,17 +49,17 @@ jobs:
         echo "Usando binario de Python: $PYTHON_BIN"
 
         # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
-        # Esto ayuda a Buildozer a encontrar el ejecutable 'python' si lo busca directamente.
-        # Colocarlo en /usr/local/bin para que esté en el PATH por defecto.
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
 
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
 
+        # Aceptar las licencias del SDK de Android automáticamente
+        # Esto es CRÍTICO para que el SDK se instale correctamente.
+        yes | python -m buildozer android update
+
         # Ejecutar Buildozer para compilar el APK.
         # Buildozer se encargará de descargar y configurar el SDK/NDK y las build-tools.
-        # Hemos eliminado 'buildozer android clean' para evitar posibles conflictos
-        # con la descarga inicial de la plataforma.
         python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
