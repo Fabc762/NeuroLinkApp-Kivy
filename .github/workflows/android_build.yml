@@ -1,6 +1,6 @@
 # .github/workflows/android_build.yml
 
-name: Android APK Build
+name: Android AAB Build
 
 on:
   push:
@@ -33,7 +33,6 @@ jobs:
     - name: Install Buildozer dependencies
       run: |
         sudo apt-get update
-        # Añadido automake para complementar autoconf y libtool
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential automake
       # Estas son las dependencias necesarias para Buildozer en Ubuntu
 
@@ -43,39 +42,32 @@ jobs:
 
     - name: Install Buildozer
       run: |
-        # Usar python3 -m pip para asegurar que se use la instalación de Python correcta
-        # Instalar buildozer, cython y setuptools explícitamente
         python3 -m pip install buildozer cython setuptools
 
-    - name: Remove Buildozer Cache # Elimina la caché de Buildozer para asegurar una compilación limpia.
+    - name: Remove Buildozer Cache
       run: |
         echo "Eliminando caché de Buildozer para asegurar una compilación limpia..."
         rm -rf .buildozer
       # Esto previene que archivos residuales de compilaciones anteriores causen problemas.
 
-    # Los pasos "Install Android SDK Build-Tools via SDK Manager" y "Update Android SDK with Buildozer"
-    # han sido eliminados. Ahora confiamos en que 'buildozer android debug' manejará
-    # la descarga y configuración del SDK y NDK por sí mismo.
-
-    - name: Build Android APK
+    - name: Build Android AAB
       run: |
-        # Añadido 'set -e' para que el workflow falle inmediatamente si un comando falla.
         set -e
-        # Configuración de entorno Python para este paso
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
         export PYTHON="$PYTHON_BIN"
-        echo "Iniciando compilación del APK. Buildozer gestionará la descarga del SDK/NDK."
-        # Ejecutar Buildozer para compilar el APK.
-        # Buildozer ahora se encargará de descargar y configurar el SDK/NDK y las build-tools.
-        python -m buildozer android debug
-      # Este comando iniciará la compilación del APK.
+        echo "Iniciando compilación del AAB. Buildozer gestionará la descarga del SDK/NDK."
+        # Ejecutar Buildozer para compilar el AAB en modo release.
+        # Buildozer se encargará de descargar y configurar el SDK/NDK y las build-tools.
+        # Asegúrate de que tu buildozer.spec tenga 'android.release = true' y 'android.enable_aab = true'
+        # y que hayas configurado tu keystore.
+        python -m buildozer android release
+      # Este comando iniciará la compilación del AAB.
 
-    - name: Upload APK artifact
+    - name: Upload AAB artifact # <--- ¡Cambiado a AAB!
       uses: actions/upload-artifact@v4
       with:
-        name: NeuroLinkApp-APK
-        path: bin/*.apk
-      # Sube el APK generado para que puedas descargarlo.
-      # El APK estará en la carpeta 'bin' de tu proyecto.
-
+        name: NeuroLinkApp-AAB
+        path: bin/*.aab # <--- ¡Cambiado a .aab!
+      # Sube el AAB generado para que puedas descargarlo.
+      # El AAB estará en la carpeta 'bin' de tu proyecto.

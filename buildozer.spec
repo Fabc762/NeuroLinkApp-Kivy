@@ -1,111 +1,79 @@
 # buildozer.spec
-# This file is used to control the build process of your application.
+# Este archivo controla el proceso de compilación de tu aplicación.
 
 [app]
 
-# (str) Title of your application
+# (str) Título de tu aplicación
 title = NeuroLinkApp - Mi Zorrito IA
 
-# (str) Package name
-package.name = com.neurolink.foxpet
+# (str) Nombre del paquete (identificador único de la aplicación)
+package.name = neurolinkappfoxpet
 
-# (str) Package domain (needed for android/ios packaging)
+# (str) Dominio del paquete (necesario para Android/iOS)
 package.domain = com.neurolink
 
-# (str) Source code where the main.py live
+# (str) Directorio del código fuente donde reside main.py
 source.dir = .
 
-# (list) Application requirements
-# comma separated e.g. requirements = kivy,python3
+# (list) Requisitos de la aplicación (librerías Python)
+# Separados por comas, ej. requirements = kivy,python3
 # ¡IMPORTANTE! Asegúrate de que todas tus librerías estén aquí.
-# 'openssl' es CRUCIAL para que 'requests' funcione correctamente en Android.
 requirements = python3,kivy,requests,google-generativeai,openssl
 
-# (str) Kivy version to use
-kivy.version = 2.3.0 # Puedes ajustar a la versión más reciente si lo deseas
+# (str) Versión de Kivy a usar (ajusta si usas otra)
+kivy.version = 2.3.0
 
-# (list) List of target machine to build for.
-# This is useful when you want to build for multiple architectures.
-# android, ios, desktop, win, mac
+# (list) Plataformas objetivo para compilar.
+# Para Android, especifica 'android'
 target.host = android
 
-# (str) The Android API level to build against
+# (str) Nivel de API de Android contra el que se compilará (ej. 33 para Android 13)
 android.api = 33
 
-# (str) The Android NDK version to use
-# android.ndk = 25b # Deja esto comentado para que Buildozer use su NDK por defecto o lo descargue.
-
-# (int) The Android SDK version to use
-# android.sdk = 33 # Deja esto comentado para que Buildozer use su SDK por defecto o lo descargue.
-
-# (int) The Android minimum API level your application require
+# (int) Nivel mínimo de API de Android que tu aplicación requiere (ej. 21 para Android 5.0 Lollipop)
 android.minapi = 21
 
-# (list) Android permissions
-# Permisos necesarios para internet, estado de la red y mantener la app activa.
+# (list) Permisos de Android que tu aplicación necesita
+# ¡IMPORTANTE! Añadidos permisos comunes para apps con red.
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WAKE_LOCK
 
-# (bool) Enable/disable Android services
-# ESTAS LÍNEAS FUERON ELIMINADAS/COMENTADAS YA QUE NO SON SINTAXIS VÁLIDA PARA BUILDER.SPEC
-# android.add_services = firebase
-# android.extra_services = FirebaseMessaging, FirebaseAuth, FirebaseFirestore
+# (bool) Habilitar/deshabilitar la compilación de lanzamiento (release build)
+# ¡DEBE SER TRUE PARA AAB/APK DE PRODUCCIÓN!
+android.release = true
 
-# (list) Logcat filters for Android debugging
-# Descomenta esta línea para ver los logs de Python en logcat
-android.logcat_filters = *:S python:I
+# (bool) Habilitar/deshabilitar la generación de Android App Bundle (AAB)
+# ¡DEBE SER TRUE PARA GENERAR UN AAB!
+android.enable_aab = true
 
-# (bool) Enable/disable release build
-android.release = false
+# (str) Archivo Keystore para firmar el APK/AAB
+# ¡CAMBIA ESTO AL NOMBRE DE TU ARCHIVO .keystore!
+# Si no tienes uno, consulta la guía anterior sobre cómo generar un keystore.
+android.release_keystore = my-release-key.keystore
 
-# (list) Include extra extensions for your source code
-# Esto asegura que tus archivos .py, .kv, .png, .jpg y .json se incluyan en el APK.
+# (str) Alias del Keystore para firmar el APK/AAB
+# ¡CAMBIA ESTO AL ALIAS QUE ELEGISTE AL CREAR EL KEYSTORE!
+android.release_keystore_alias = alias_name
+
+# (str) Contraseña del Keystore (se solicitará si no se establece aquí)
+# android.release_keystore_passphrase = tu_contraseña_keystore
+
+# (str) Contraseña del alias de la clave (se solicitará si no se establece aquí)
+# android.release_keyalias_passphrase = tu_contraseña_alias
+
+# (bool) Modo depuración (debe ser False para compilaciones de lanzamiento)
+debug = False
+
+# (list) Extensiones de archivos a incluir en el código fuente
 source.include_exts = py,kv,png,jpg,json
 
-# (list) Exclude files from the build process
-# exclude_exts = spec
-
-# (str) Icon file
-# Ruta a tu icono. Asegúrate de que 'images' esté en el mismo directorio que main.py.
+# (str) Archivo de icono de la aplicación
 icon.filename = %(source.dir)s/images/raccoon_pixel.png
 
-# (str) Splash screen file
-# splash.filename = %(source.dir)s/images/splash.png # Descomenta si tienes una imagen de splash
-
-# (str) Orientation of the application
+# (str) Orientación de la aplicación (portrait o landscape)
 orientation = portrait
 
-# (bool) Debug mode
-debug = True
-
-# (list) Android build tools version to use
-# android.build_tools = 33.0.0
-
-# (str) Android target SDK version (usually same as android.api)
-# android.target_sdk = 33
-
-# (str) Android NDK path (if not set, Buildozer will download it)
-# android.ndk_path = /path/to/android-ndk-r25b
-
-# (str) Android SDK path (if not set, Buildozer will try to find it)
-# android.sdk_path = /path/to/android-sdk
-
-# (str) Java Home path (if not set, Buildozer will try to find it)
-# java.home = /path/to/jdk-11
-
-# (list) Extra arguments to pass to the Android build tool (gradle)
-# android.extra_gradle_args = --stacktrace
-
-# (bool) Enable/disable aapt2 (Android Asset Packaging Tool 2)
-# android.enable_aapt2 = True
-
-# (list) Extra Java libraries to include in the build
-# android.add_libs = path/to/mylib.jar
-
-# (list) Extra native libraries (.so files) to include in the build
-# android.add_native_libs = path/to/mylib.so
-
-# (str) Application version string
+# (str) Versión de la aplicación (visible para el usuario)
 version = 0.1
 
-# (int) Application version code
+# (int) Código de versión de la aplicación (debe ser un entero, incrementa con cada nueva versión)
 version.code = 1
