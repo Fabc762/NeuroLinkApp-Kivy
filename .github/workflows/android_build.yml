@@ -55,14 +55,12 @@ jobs:
 
     - name: Update Android SDK with Buildozer
       run: |
-        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        # Configuración de entorno Python para este paso
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
-        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
         echo "Actualizando SDK de Android con Buildozer y aceptando licencias..."
-        # Aceptar las licencias del SDK de Android automáticamente y actualizar
+        # Este comando descargará el SDK/NDK y aceptará las licencias.
         python -m buildozer android update
       # Este paso asegura que el SDK esté instalado y las licencias aceptadas.
 
@@ -70,11 +68,9 @@ jobs:
       run: |
         # Añadido 'set -e' para que el workflow falle inmediatamente si un comando falla.
         set -e
-        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        # Configuración de entorno Python para este paso
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
-        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
         echo "Iniciando compilación del APK..."
         # Ejecutar Buildozer para compilar el APK.
