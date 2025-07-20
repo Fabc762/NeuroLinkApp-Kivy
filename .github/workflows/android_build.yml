@@ -1,0 +1,57 @@
+# .github/workflows/android_build.yml
+
+name: Android APK Build
+
+on:
+  push:
+    branches:
+      - main # Asegúrate de que esta sea tu rama principal (en tu caso, 'main')
+  pull_request:
+    branches:
+      - main # Asegúrate de que esta sea tu rama principal (en tu caso, 'main')
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Usamos un entorno Linux (Ubuntu)
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Descarga tu código del repositorio
+
+    - name: Set up Java Development Kit (JDK)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin' # Distribución de OpenJDK
+        java-version: '17' # Versión de Java requerida para Android
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' # Usamos una versión estable de Python
+
+    - name: Install Buildozer dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential
+      # Estas son las dependencias necesarias para Buildozer en Ubuntu
+
+    - name: Install Buildozer
+      run: |
+        pip install buildozer
+
+    - name: Build Android APK
+      run: |
+        # Asegúrate de que el archivo buildozer.spec esté en la raíz de tu proyecto
+        # y que los requisitos (requirements) en buildozer.spec sean correctos.
+        # Por ejemplo: requirements = python3,kivy,requests,google-generativeai,openssl
+        buildozer android debug
+      # Este comando iniciará la compilación del APK.
+      # La primera vez descargará el SDK/NDK, lo que puede tardar.
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeuroLinkApp-APK
+        path: bin/*.apk
+      # Sube el APK generado para que puedas descargarlo.
+      # El APK estará en la carpeta 'bin' de tu proyecto.
