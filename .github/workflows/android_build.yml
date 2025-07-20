@@ -18,7 +18,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4 # Descarga tu código del repositorio
 
-    - name: Set up Java Development Kit (JDK)
+    - name: Set up Java Development Kait (JDK)
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin' # Distribución de OpenJDK
@@ -43,19 +43,18 @@ jobs:
 
     - name: Build Android APK
       run: |
-        # Obtener la ruta exacta del binario de Python instalado por setup-python
-        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        echo "Usando binario de Python: $PYTHON_BIN"
-
-        # Crear un alias para 'python' que apunte a la instalación específica de python3
-        # Esto asegura que el comando 'python' sea reconocido en esta sesión de shell.
-        alias python="$PYTHON_BIN"
+        # Obtener la ruta exacta del directorio binario de Python instalado por setup-python
+        PYTHON_BIN_DIR="${{ steps.setup-python.outputs.pythonLocation }}/bin"
+        echo "Añadiendo $PYTHON_BIN_DIR a PATH para Buildozer."
+        # Añadir el directorio de Python al PATH para que Buildozer encuentre 'python'
+        export PATH="$PYTHON_BIN_DIR:$PATH"
 
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
-        export PYTHON="$PYTHON_BIN"
+        # Aunque el PATH es más robusto, esta variable puede ser un respaldo.
+        export PYTHON="$PYTHON_BIN_DIR/python3"
 
-        # Ejecutar Buildozer usando el alias 'python'
-        python -m buildozer android debug
+        # Ejecutar Buildozer. Ahora debería encontrar 'python' en el PATH.
+        buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
 
