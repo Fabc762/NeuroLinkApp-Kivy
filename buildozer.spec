@@ -7,7 +7,7 @@
 title = NeuroLinkApp - Mi Zorrito IA
 
 # (str) Package name
-package.name = neurolinkappfoxpet
+package.name = com.neurolink.foxpet
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = com.neurolink
@@ -22,7 +22,7 @@ source.dir = .
 requirements = python3,kivy,requests,google-generativeai,openssl
 
 # (str) Kivy version to use
-kivy.version = 2.3.0 # Versión estable, puedes ajustarla si usas otra específica
+kivy.version = 2.3.0 # Puedes ajustar a la versión más reciente si lo deseas
 
 # (list) List of target machine to build for.
 # This is useful when you want to build for multiple architectures.
@@ -30,7 +30,6 @@ kivy.version = 2.3.0 # Versión estable, puedes ajustarla si usas otra específi
 target.host = android
 
 # (str) The Android API level to build against
-# android.api = 33 es un buen estándar. Asegúrate de tener ese SDK instalado.
 android.api = 33
 
 # (str) The Android NDK version to use
@@ -45,6 +44,11 @@ android.minapi = 21
 # (list) Android permissions
 # Permisos necesarios para internet, estado de la red y mantener la app activa.
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WAKE_LOCK
+
+# (bool) Enable/disable Android services
+# ESTAS LÍNEAS FUERON ELIMINADAS/COMENTADAS YA QUE NO SON SINTAXIS VÁLIDA PARA BUILDER.SPEC
+# android.add_services = firebase
+# android.extra_services = FirebaseMessaging, FirebaseAuth, FirebaseFirestore
 
 # (list) Logcat filters for Android debugging
 # Descomenta esta línea para ver los logs de Python en logcat
@@ -74,28 +78,31 @@ orientation = portrait
 debug = True
 
 # (list) Android build tools version to use
-# android.build_tools = 33.0.0 # Deja esto comentado para que Buildozer lo gestione.
+# android.build_tools = 33.0.0
 
 # (str) Android target SDK version (usually same as android.api)
-# android.target_sdk = 33 # Deja esto comentado.
+# android.target_sdk = 33
 
 # (str) Android NDK path (if not set, Buildozer will download it)
-# android.ndk_path = /path/to/android-ndk-r25b # Deja esto comentado.
+# android.ndk_path = /path/to/android-ndk-r25b
 
 # (str) Android SDK path (if not set, Buildozer will try to find it)
-# android.sdk_path = /path/to/android-sdk # Deja esto comentado.
+# android.sdk_path = /path/to/android-sdk
 
 # (str) Java Home path (if not set, Buildozer will try to find it)
-# java.home = /path/to/jdk-11 # Deja esto comentado.
+# java.home = /path/to/jdk-11
 
 # (list) Extra arguments to pass to the Android build tool (gradle)
-# android.extra_gradle_args = --stacktrace # Útil para depuración avanzada si hay errores de Gradle.
+# android.extra_gradle_args = --stacktrace
+
+# (bool) Enable/disable aapt2 (Android Asset Packaging Tool 2)
+# android.enable_aapt2 = True
 
 # (list) Extra Java libraries to include in the build
-# android.add_libs = path/to/mylib.jar # Descomenta si necesitas añadir JARs externos.
+# android.add_libs = path/to/mylib.jar
 
 # (list) Extra native libraries (.so files) to include in the build
-# android.add_native_libs = path/to/mylib.so # Descomenta si necesitas añadir librerías .so externas.
+# android.add_native_libs = path/to/mylib.so
 
 # (str) Application version string
 version = 0.1
