@@ -33,6 +33,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential
+        # Crear un enlace simbólico para 'python' que apunte a 'python3'
+        # Esto ayuda a Buildozer a encontrar el ejecutable de Python.
+        sudo ln -s /usr/bin/python3 /usr/bin/python || true
       # Estas son las dependencias necesarias para Buildozer en Ubuntu
 
     - name: Install Buildozer
