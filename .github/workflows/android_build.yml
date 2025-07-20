@@ -42,27 +42,43 @@ jobs:
         # Instalar buildozer, cython y setuptools explícitamente
         python3 -m pip install buildozer cython setuptools
 
-    - name: Build Android APK
+    - name: Clean Buildozer Environment # <--- ¡NUEVO PASO!
       run: |
         # Obtener la ruta exacta del binario de Python instalado por setup-python
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        echo "Usando binario de Python: $PYTHON_BIN"
-
         # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
-
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
+        echo "Limpiando entorno de Buildozer..."
+        python -m buildozer android clean
+      # Limpia cualquier compilación anterior y dependencias descargadas.
 
-        # Aceptar las licencias del SDK de Android automáticamente
-        # Esto es CRÍTICO para que el SDK se instale correctamente.
+    - name: Update Android SDK with Buildozer # <--- ¡NUEVO PASO!
+      run: |
+        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
+        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
+        sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
+        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
+        export PYTHON="$PYTHON_BIN"
+        echo "Aceptando licencias del SDK de Android y actualizando..."
+        # Aceptar las licencias del SDK de Android automáticamente y actualizar
         yes | python -m buildozer android update
+      # Este paso asegura que el SDK esté instalado y las licencias aceptadas.
 
+    - name: Build Android APK # <--- PASO SIMPLIFICADO
+      run: |
+        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
+        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
+        sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
+        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
+        export PYTHON="$PYTHON_BIN"
+        echo "Iniciando compilación del APK..."
         # Ejecutar Buildozer para compilar el APK.
-        # Buildozer se encargará de descargar y configurar el SDK/NDK y las build-tools.
         python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
-      # La primera vez descargará el SDK/NDK, lo que puede tardar.
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
