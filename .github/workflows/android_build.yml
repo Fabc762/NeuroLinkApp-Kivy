@@ -28,14 +28,12 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.10' # Usamos una versión estable de Python
+      id: setup-python # <--- ¡NUEVO! Le damos un ID para acceder a su salida
 
     - name: Install Buildozer dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential
-        # Crear un enlace simbólico para 'python' que apunte a 'python3'
-        # Esto ayuda a Buildozer a encontrar el ejecutable de Python.
-        sudo ln -s /usr/bin/python3 /usr/bin/python || true
       # Estas son las dependencias necesarias para Buildozer en Ubuntu
 
     - name: Install Buildozer
@@ -45,9 +43,18 @@ jobs:
 
     - name: Build Android APK
       run: |
+        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
+        echo "Usando binario de Python: $PYTHON_BIN"
+
+        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
+        # Esto ayuda a Buildozer a encontrar el ejecutable 'python' si lo busca directamente.
+        sudo ln -s "$PYTHON_BIN" /usr/local/bin/python || true
+
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
-        # Esto es un intento de solucionar el error "Python not found".
-        export PYTHON=/usr/bin/python3
+        export PYTHON="$PYTHON_BIN"
+
+        # Ejecutar Buildozer usando python3 -m buildozer
         python3 -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
