@@ -53,14 +53,33 @@ jobs:
         rm -rf .buildozer
       # Esto previene que archivos residuales de compilaciones anteriores causen problemas.
 
+    - name: Install Android SDK Build-Tools via SDK Manager # <--- ¡NUEVO PASO CRÍTICO!
+      run: |
+        # Configurar ANDROID_HOME y ANDROID_SDK_ROOT para sdkmanager
+        echo "ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
+        mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
+        # Descargar sdkmanager
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-8583971_latest.zip -O /tmp/cmdline-tools.zip
+        unzip -q /tmp/cmdline-tools.zip -d $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+        # Añadir sdkmanager al PATH
+        echo "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+        # Aceptar licencias del SDK de Android
+        yes | $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+
+        # Instalar la versión de Build-Tools necesaria (ej. 33.0.0)
+        echo "Instalando Android SDK Build-Tools 33.0.0..."
+        $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.0" "platform-tools" "platforms;android-33"
+
     - name: Update Android SDK with Buildozer
       run: |
         # Configuración de entorno Python para este paso
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
         export PYTHON="$PYTHON_BIN"
-        echo "Actualizando SDK de Android con Buildozer y aceptando licencias..."
-        # Este comando descargará el SDK/NDK y aceptará las licencias.
+        echo "Actualizando SDK de Android con Buildozer (verificación adicional)..."
+        # Este comando ahora debería encontrar las herramientas ya instaladas por sdkmanager
         python -m buildozer android update
       # Este paso asegura que el SDK esté instalado y las licencias aceptadas.
 
