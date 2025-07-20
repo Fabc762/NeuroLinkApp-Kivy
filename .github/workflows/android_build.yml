@@ -18,7 +18,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4 # Descarga tu código del repositorio
 
-    - name: Set up Java Development Kait (JDK)
+    - name: Set up Java Development Kit (JDK) # Corregido: "Kait" a "Kit"
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin' # Distribución de OpenJDK
@@ -39,22 +39,26 @@ jobs:
     - name: Install Buildozer
       run: |
         # Usar python3 -m pip para asegurar que se use la instalación de Python correcta
-        python3 -m pip install buildozer
+        # Instalar buildozer, cython y setuptools explícitamente
+        python3 -m pip install buildozer cython setuptools
 
     - name: Build Android APK
       run: |
-        # Obtener la ruta exacta del directorio binario de Python instalado por setup-python
-        PYTHON_BIN_DIR="${{ steps.setup-python.outputs.pythonLocation }}/bin"
-        echo "Añadiendo $PYTHON_BIN_DIR a PATH para Buildozer."
-        # Añadir el directorio de Python al PATH para que Buildozer encuentre 'python'
-        export PATH="$PYTHON_BIN_DIR:$PATH"
+        # Obtener la ruta exacta del binario de Python instalado por setup-python
+        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
+        echo "Usando binario de Python: $PYTHON_BIN"
+
+        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
+        # Esto ayuda a Buildozer a encontrar el ejecutable 'python' si lo busca directamente.
+        # Colocarlo en /usr/local/bin para que esté en el PATH por defecto.
+        sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
 
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
-        # Aunque el PATH es más robusto, esta variable puede ser un respaldo.
-        export PYTHON="$PYTHON_BIN_DIR/python3"
+        export PYTHON="$PYTHON_BIN"
 
-        # Ejecutar Buildozer. Ahora debería encontrar 'python' en el PATH.
-        buildozer android debug
+        # Ejecutar Buildozer usando el comando 'python -m buildozer'
+        # Esto asegura que se use el intérprete Python correcto y sus módulos.
+        python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
 
