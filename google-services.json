@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348809511282",
+    "project_id": "neurolinkapp",
+    "storage_bucket": "neurolinkapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348809511282:android:c15037c37039b2424f1deb",
+        "android_client_info": {
+          "package_name": "com.neurolink.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB08LrileH3Dx8NA3KCer1QGg7EQcWTxoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
