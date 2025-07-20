@@ -49,35 +49,15 @@ jobs:
         echo "Usando binario de Python: $PYTHON_BIN"
 
         # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
+        # Esto ayuda a Buildozer a encontrar el ejecutable 'python' si lo busca directamente.
+        # Colocarlo en /usr/local/bin para que esté en el PATH por defecto.
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
 
         # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
         export PYTHON="$PYTHON_BIN"
 
-        # Ejecutar Buildozer para que descargue el SDK/NDK y cree la estructura
-        # Esto es crucial para que las build-tools existan antes de intentar añadirlas al PATH.
-        # Primero, una limpieza para asegurar que Buildozer re-descargue si es necesario
-        buildozer android clean
-
-        # Ahora que Buildozer ha ejecutado 'clean' (que también puede inicializar estructuras),
-        # podemos intentar encontrar las build-tools y añadirlas al PATH.
-        ANDROID_SDK_ROOT="$HOME/.buildozer/android/platform/android-sdk"
-        echo "ANDROID_SDK_ROOT es $ANDROID_SDK_ROOT"
-
-        # Encontrar la versión más reciente de build-tools (excluyendo RCs)
-        # Se usa un wildcard para ser más flexible con la estructura de directorios
-        BUILD_TOOLS_PATH=$(find "$ANDROID_SDK_ROOT/build-tools" -maxdepth 2 -type d \
-            -name "*" | grep -v -- "-rc" | sort -V | tail -n 1)
-
-        if [ -d "$BUILD_TOOLS_PATH" ]; then
-          echo "Añadiendo Android Build-Tools a PATH: $BUILD_TOOLS_PATH"
-          echo "$BUILD_TOOLS_PATH" >> $GITHUB_PATH # Añade la ruta al PATH para los siguientes comandos
-        else
-          echo "Error: Directorio de Android Build-Tools no encontrado después de buildozer android clean en $BUILD_TOOLS_PATH."
-          exit 1 # Fallar la tarea si las build-tools no se encuentran
-        fi
-
-        # Finalmente, ejecutar la compilación de Buildozer
+        # Ejecutar Buildozer. Buildozer se encargará de descargar y configurar el SDK/NDK
+        # y las build-tools en la ruta correcta.
         python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
