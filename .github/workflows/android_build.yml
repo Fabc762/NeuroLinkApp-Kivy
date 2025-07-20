@@ -37,7 +37,7 @@ jobs:
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential automake
       # Estas son las dependencias necesarias para Buildozer en Ubuntu
 
-    - name: Upgrade pip and wheel # <--- ¡NUEVO PASO SUGERIDO POR GITHUB!
+    - name: Upgrade pip and wheel
       run: |
         python3 -m pip install --upgrade pip wheel
 
@@ -47,23 +47,11 @@ jobs:
         # Instalar buildozer, cython y setuptools explícitamente
         python3 -m pip install buildozer cython setuptools
 
-    - name: Remove Buildozer Cache # <--- ¡NUEVO PASO SUGERIDO POR GITHUB!
+    - name: Remove Buildozer Cache # Elimina la caché de Buildozer para asegurar una compilación limpia.
       run: |
         echo "Eliminando caché de Buildozer para asegurar una compilación limpia..."
         rm -rf .buildozer
       # Esto previene que archivos residuales de compilaciones anteriores causen problemas.
-
-    - name: Clean Buildozer Environment
-      run: |
-        # Obtener la ruta exacta del binario de Python instalado por setup-python
-        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        # Crear un enlace simbólico para 'python' que apunte a la instalación específica de python3
-        sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
-        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
-        export PYTHON="$PYTHON_BIN"
-        echo "Limpiando entorno de Buildozer..."
-        python -m buildozer android clean
-      # Limpia cualquier compilación anterior y dependencias descargadas.
 
     - name: Update Android SDK with Buildozer
       run: |
@@ -75,7 +63,6 @@ jobs:
         export PYTHON="$PYTHON_BIN"
         echo "Actualizando SDK de Android con Buildozer y aceptando licencias..."
         # Aceptar las licencias del SDK de Android automáticamente y actualizar
-        # Eliminado 'yes |' para evitar 'Broken pipe' y confiar en el modo no interactivo de buildozer
         python -m buildozer android update
       # Este paso asegura que el SDK esté instalado y las licencias aceptadas.
 
