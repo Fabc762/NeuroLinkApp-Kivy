@@ -53,49 +53,9 @@ jobs:
         rm -rf .buildozer
       # Esto previene que archivos residuales de compilaciones anteriores causen problemas.
 
-    - name: Install Android SDK Build-Tools via SDK Manager # <--- ¡NUEVO PASO CRÍTICO!
-      run: |
-        set -ex # Salir inmediatamente si un comando falla y mostrar los comandos ejecutados
-        echo "Configurando variables de entorno para Android SDK..."
-        # Configurar ANDROID_HOME y ANDROID_SDK_ROOT para sdkmanager
-        ANDROID_SDK_PATH="$HOME/.buildozer/android/platform/android-sdk"
-        echo "ANDROID_HOME=$ANDROID_SDK_PATH" >> $GITHUB_ENV
-        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_PATH" >> $GITHUB_ENV
-        
-        echo "Creando directorios para las herramientas de línea de comandos del SDK..."
-        mkdir -p "$ANDROID_SDK_PATH/cmdline-tools/latest/bin"
-        
-        echo "Descargando herramientas de línea de comandos del SDK (sdkmanager)..."
-        # Reintentar la descarga y usar una URL directa si la anterior falla
-        wget -q --timeout=30 --tries=5 https://dl.google.com/android/repository/commandlinetools-linux-8583971_latest.zip -O /tmp/cmdline-tools.zip || \
-        wget -q --timeout=30 --tries=5 https://dl.google.com/android/repository/commandlinetools-linux-6858078_latest.zip -O /tmp/cmdline-tools.zip
-        
-        echo "Descomprimiendo herramientas de línea de comandos del SDK..."
-        unzip -q /tmp/cmdline-tools.zip -d "$ANDROID_SDK_PATH/cmdline-tools/latest"
-        
-        echo "Añadiendo sdkmanager al PATH del sistema..."
-        echo "$ANDROID_SDK_PATH/cmdline-tools/latest/bin" >> $GITHUB_PATH
-
-        echo "Esperando un momento antes de ejecutar sdkmanager..."
-        sleep 5 # Dar un breve respiro al sistema después de la descompresión
-
-        echo "Aceptando licencias del SDK de Android..."
-        yes | "$ANDROID_SDK_PATH/cmdline-tools/latest/bin/sdkmanager" --licenses
-        
-        echo "Instalando Android SDK Build-Tools 33.0.0, platform-tools y platforms;android-33..."
-        yes | "$ANDROID_SDK_PATH/cmdline-tools/latest/bin/sdkmanager" "build-tools;33.0.0" "platform-tools" "platforms;android-33"
-        echo "Instalación de Build-Tools completada."
-
-    - name: Update Android SDK with Buildozer
-      run: |
-        # Configuración de entorno Python para este paso
-        PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
-        sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
-        export PYTHON="$PYTHON_BIN"
-        echo "Actualizando SDK de Android con Buildozer (verificación adicional)..."
-        # Este comando ahora debería encontrar las herramientas ya instaladas por sdkmanager
-        python -m buildozer android update
-      # Este paso asegura que el SDK esté instalado y las licencias aceptadas.
+    # Los pasos "Install Android SDK Build-Tools via SDK Manager" y "Update Android SDK with Buildozer"
+    # han sido eliminados. Ahora confiamos en que 'buildozer android debug' manejará
+    # la descarga y configuración del SDK y NDK por sí mismo.
 
     - name: Build Android APK
       run: |
@@ -105,8 +65,9 @@ jobs:
         PYTHON_BIN="${{ steps.setup-python.outputs.pythonLocation }}/bin/python3"
         sudo ln -sf "$PYTHON_BIN" /usr/local/bin/python || true
         export PYTHON="$PYTHON_BIN"
-        echo "Iniciando compilación del APK..."
+        echo "Iniciando compilación del APK. Buildozer gestionará la descarga del SDK/NDK."
         # Ejecutar Buildozer para compilar el APK.
+        # Buildozer ahora se encargará de descargar y configurar el SDK/NDK y las build-tools.
         python -m buildozer android debug
       # Este comando iniciará la compilación del APK.
 
