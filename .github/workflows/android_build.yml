@@ -66,13 +66,18 @@ jobs:
         mkdir -p "$ANDROID_SDK_PATH/cmdline-tools/latest/bin"
         
         echo "Descargando herramientas de línea de comandos del SDK (sdkmanager)..."
-        wget -q --timeout=30 --tries=5 https://dl.google.com/android/repository/commandlinetools-linux-8583971_latest.zip -O /tmp/cmdline-tools.zip
+        # Reintentar la descarga y usar una URL directa si la anterior falla
+        wget -q --timeout=30 --tries=5 https://dl.google.com/android/repository/commandlinetools-linux-8583971_latest.zip -O /tmp/cmdline-tools.zip || \
+        wget -q --timeout=30 --tries=5 https://dl.google.com/android/repository/commandlinetools-linux-6858078_latest.zip -O /tmp/cmdline-tools.zip
         
         echo "Descomprimiendo herramientas de línea de comandos del SDK..."
         unzip -q /tmp/cmdline-tools.zip -d "$ANDROID_SDK_PATH/cmdline-tools/latest"
         
         echo "Añadiendo sdkmanager al PATH del sistema..."
         echo "$ANDROID_SDK_PATH/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+        echo "Esperando un momento antes de ejecutar sdkmanager..."
+        sleep 5 # Dar un breve respiro al sistema después de la descompresión
 
         echo "Aceptando licencias del SDK de Android..."
         yes | "$ANDROID_SDK_PATH/cmdline-tools/latest/bin/sdkmanager" --licenses
@@ -112,3 +117,4 @@ jobs:
         path: bin/*.apk
       # Sube el APK generado para que puedas descargarlo.
       # El APK estará en la carpeta 'bin' de tu proyecto.
+
