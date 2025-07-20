@@ -45,7 +45,9 @@ jobs:
 
     - name: Build Android APK
       run: |
-        # Usar python3 -m buildozer para asegurar que se use la instalación de Python correcta
+        # Exportar la variable de entorno PYTHON para asegurar que Buildozer la encuentre.
+        # Esto es un intento de solucionar el error "Python not found".
+        export PYTHON=/usr/bin/python3
         python3 -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
