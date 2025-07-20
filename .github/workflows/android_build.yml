@@ -37,14 +37,13 @@ jobs:
 
     - name: Install Buildozer
       run: |
-        pip install buildozer
+        # Usar python3 -m pip para asegurar que se use la instalación de Python correcta
+        python3 -m pip install buildozer
 
     - name: Build Android APK
       run: |
-        # Asegúrate de que el archivo buildozer.spec esté en la raíz de tu proyecto
-        # y que los requisitos (requirements) en buildozer.spec sean correctos.
-        # Por ejemplo: requirements = python3,kivy,requests,google-generativeai,openssl
-        buildozer android debug
+        # Usar python3 -m buildozer para asegurar que se use la instalación de Python correcta
+        python3 -m buildozer android debug
       # Este comando iniciará la compilación del APK.
       # La primera vez descargará el SDK/NDK, lo que puede tardar.
 
